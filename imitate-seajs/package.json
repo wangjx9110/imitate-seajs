@@ -1,5 +1,9 @@
 {
-    "name": "imitate-seajs",
-    "version": "0.0.1",
-    "author:"
+  "name": "imitate-seajs",
+  "version": "0.0.1",
+  "author": "juexin",
+  "devDependencies": {
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt": "~0.4.1"
+  }
 }
