@@ -17,11 +17,11 @@
         version: "[__version__]"
     };
 
-    //定义data属性
+    //定义data属性.. IMP : 将data属性挂在seajs全局变量上, 供外界访问
 
     var data = seajs.data = {};
 // [3] util-lang.js
-    //注意此处的isType利用闭包, 很高端, 学习了
+    //IMP : 注意此处的isType利用闭包, 很高端, 学习了
     function isType(type) {
         return function(obj) {
             return Object.prototype.toString.call(obj) === '[object ' + type + ']';
@@ -31,7 +31,45 @@
     var isObject = isType('Object');
     var isFunction = isType('Function');
     var isArray = Array.isArray || isType('Array');
-// [4] .js
+    var isString = isType('String');
+
+    /*-- 目前不懂什么意思 _cid --*/
+    var _cid = 0;
+    function cid() {
+        return _cid++;
+    }
+// [4] util-event.js
+    //seajs自己的事件触发, on绑定事件, off移除事件, emit触发事件
+    var events = data.events = {};
+
+
+    seajs.on = function(name, callback) {
+        var list = events[name] || (events[name] = []);
+        list.push(callback);    //如果没传callback怎么办?
+        return seajs //IMP: 可以实现连续调用
+    };
+
+    seajs.off = function(name, callback) {
+        if (!name && !callback) {
+            events = {};
+            return seajs;   //IMP: 写事件注意不要忘记返回全局
+        }
+        var list = events[name];
+        if (!callback) {
+            list = [];
+            return seajs;
+        }
+        for (var i = 0, len = list.length; i < len; i++) {
+            if (list[i] === callback) {
+                list.splice(i, 1);
+            }
+        }
+        return seajs;
+    };
+
+    var emit = seajs.emit = function(name, data) {
+
+    };
 // [5] .js
 // [6] .js
 // [7] .js
