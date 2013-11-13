@@ -4,10 +4,11 @@
 ##收获
 ###收获1: Array.isArray()函数可以用来判断参数是否为数组, IE6,7,8不支持, 9支持, chrome&ff 支持
 ###不支持的情况下可以使用
-function isType(type) {
-    return function(obj) {
-        return Object.prototype.toString.call(obj) === '[object ' + type + ']';
-    }
-}
 
-var isArray = Array.isArray || isType('Array');
+    function isType(type) {
+        return function(obj) {
+            return Object.prototype.toString.call(obj) === '[object ' + type + ']';
+        }
+    }
+
+    var isArray = Array.isArray || isType('Array');
