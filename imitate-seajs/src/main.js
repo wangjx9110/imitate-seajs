@@ -85,12 +85,50 @@
     };
 // [5] util-path.js
 
+    // dirname:    获取路径的目录
+    // realpath:   过滤目录中的./ ../
+    // normalize:  补全文件名.js后缀
+
+    // parseAlias: 解析配置别名
+    // parsePaths: 解析配置中的path
+    // parseVars:  解析配置中的{} 即变量
+
+    // addBase:    通过id, (路由规则)?生成完整绝对路径
+    // id2Uri:     通过id获取uri, 完整的绝对路径
+
+    // loaderDir:  seajs文件路径的获取, 根据id=seajsnode查找seajs的DOM, 获取src后匹配目录
+
     var DIRNAME_RE = /[^?#]*\//;
 
+    //将path转成 '****/' 的形式
     function dirname(path) {
         return path.match(DIRNAME_RE)[0];
     }
-// [6] .js
+
+    var doc = document;
+    var loc = location;
+
+    var cwd = dirname(loc.href);    //路径.去掉?...或者#...还有文件名
+                                    //变为 '****/' 的形式
+    var scripts = doc.getElementsByTagName('script');
+
+    var loaderScript = doc.getElemenrById('seajsnode') || scripts[scripts.length - 1];
+    //??? 没有seajsnode节点就取最后一个吗?
+
+    var loaderDir = dirname(getScriptAbsoluteSrc(loaderScript)) || cwd;
+    //如果<script>没有src属性, 就使用当前的URL转换形式
+
+    function getScriptAbsoluteSrc(node) {
+        return node.hasAttribute ? //IE67没有上面的属性
+        node.src : node.getAttribute('src', 4);
+        //常规浏览器返回src属性值
+        //IE 6 7 返回全称值 (加域名)
+    }
+
+// [6] util-request.js
+    //用于请求SCRIPT & STYLE
+    
+
 // [7] .js
 
 // [X] outro.js

@@ -42,4 +42,8 @@
 
 ###收获6: URI后面只能跟?(代表查询字符串)和#(代表HASH)
 
-#当前进度 util-event seajs.off line27
+###收获7: String.substring(start[, stop])用法, 不接受负参数, 截取字符串start处到stop-1(包括stop-1)处的值. 
+
+#当前进度 
+#1.util-event seajs.off line27
+#2.util-request 刚开始 event有些函数没仔细看..用的时候仔细研究..
