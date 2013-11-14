@@ -51,26 +51,45 @@
 
     seajs.off = function(name, callback) {
         if (!name && !callback) {
-            events = {};
+            // events = {}; IMP: !!!此处应该像下面那样写, 虽然events和data.events是相同的引用, 
+                                //但是在赋值时一定要注意, 单独events的赋值(={})已经修改了它的指向, 
+                                //并不会对data.events造成影响...
+            events = data.events = {};
             return seajs;   //IMP: 写事件注意不要忘记返回全局
         }
-        var list = events[name];
-        if (!callback) {
-            list = [];
-            return seajs;
-        }
-        for (var i = 0, len = list.length; i < len; i++) {
-            if (list[i] === callback) {
-                list.splice(i, 1);
+        var list = events[name];    //此时要考虑为空的情况
+        if (list) {
+            if (callback) {
+                for (var i = list.length - 1; i >= 0; i--) {
+                    if (list[i] === callback) {
+                        list.splice(i, 1);
+                    }
+                }
+            } else {
+                delete events[name];
             }
         }
         return seajs;
     };
 
     var emit = seajs.emit = function(name, data) {
+        var list = events[name], func;
+        if (list) {
+            list = list.slice();
 
+            while (func = list.shift()) {   //按序执行
+                func(data);
+            }
+        }
+        return seajs;
     };
-// [5] .js
+// [5] util-path.js
+
+    var DIRNAME_RE = /[^?#]*\//;
+
+    function dirname(path) {
+        return path.match(DIRNAME_RE)[0];
+    }
 // [6] .js
 // [7] .js
 
