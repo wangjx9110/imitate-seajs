@@ -100,9 +100,66 @@
 
     var DIRNAME_RE = /[^?#]*\//;
 
+    var DOT_RE = /\/\.\//g;
+    var DOUBLE_DOT_RE = /\/[^/]+\/\.\.\//;
+
     //将path转成 '****/' 的形式
     function dirname(path) {
         return path.match(DIRNAME_RE)[0];
+    }
+
+    function realpath(path) {
+        // /a/b/./c/./d => /a/b/c/d            /./ -> /
+        path = path.replace(DOT_RE, '/');
+
+        // a/b/c/../../d => a/b/../d => a/d    /xxxxxx/../ -> /
+        while (path.match(DOUBLE_DOT_RE)) { 
+            path = path.replace(DOUBLE_DOT_RE, '/');
+        }
+
+        return path;
+    }
+    //补全文件全名
+    function normalize(path) {
+        //1.如果最后一个是'#'则去掉
+        //2.如果最后不是.js | .css | / | 存在? <即最后是查询字符串> 则在最后补全.js
+
+        var last = path.length - 1;
+        var lastC = path.charAt(last);
+
+        if (lastC === '#') {    //www.wangjuexin.cn/aaa.js# | www.wangjuexin.cn/#
+            return path.substring(0, last);
+        }
+
+        if (path.substring(last - 2) === '.js' || 
+            path.substring(last - 3) === '.css' ||
+            path.indexOf('?') > 0 ||
+            lastC === '/') {
+            return path;
+        } else {
+            return path + '.js';
+        }
+    }
+
+    var PATH_RE = /^([^/:]+)(\/.+)$/;
+    var VAR_RE = /{([^{]+)}/g;
+    //解析配置中的别名
+    function parseAlias(id) {
+        var alias = data.alias;
+        if (alias) {
+            //别名是字符串则返回字符串, 否则返回id
+            return isString(alias[id]) ? alias[id] : id;
+        } else {
+            return alias;   //undefined
+        }
+    }
+    //解析配置中的path
+    function parsePaths(id) {
+        
+    }
+    //解析配置中的变量 ( {...} )
+    function parseVars(id) {
+
     }
 
     var doc = document;
@@ -129,7 +186,7 @@
     //用于请求SCRIPT & STYLE
     
 
-// [7] .js
+// [7] util-deps.js
 
 // [X] outro.js
 })(this);
